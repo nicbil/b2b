@@ -1,0 +1,45 @@
+<div class="movie-list">
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="Title" [formControl]="filterControl">
+  </mat-form-field>
+
+  <mat-table [dataSource]="dataSource" matSort>
+    <ng-container *ngFor="let columnTable of columnsTable | objNgFor;" [matColumnDef]="columnTable.key">
+      <mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="!columnTable.sort">
+        {{columnTable.key}}
+      </mat-header-cell>
+
+      <mat-cell *matCellDef="let row">
+        <ng-container [ngSwitch]="columnTable.type">
+          <ng-container *ngSwitchCase="'actions'">
+            <button mat-raised-button (click)="addMovie(row)">Add Movie</button>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'img'">
+            <img [src]="row[columnTable.key]" [routerLink]="['/details/', row.imdbID]" width="100px" class="poster">
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'link'">
+            <a [routerLink]="['/details/', row.imdbID]">
+              {{row[columnTable.key]}}
+            </a>
+          </ng-container>
+
+          <ng-container *ngSwitchDefault>
+            {{row[columnTable.key]}}
+          </ng-container>
+        </ng-container>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+
+  <mat-paginator
+    [pageIndex]="paginator.pageIndex"
+    [pageSize]="paginator.pageSize"
+    [length]="paginator.length"
+  >
+  </mat-paginator>
+</div>
